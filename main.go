@@ -1,8 +1,6 @@
 package main
 
 import (
-	"crypto/hmac"
-	"crypto/sha256"
 	"encoding/json"
 	"io/ioutil"
 	"log"
@@ -64,7 +62,7 @@ func handleGithub(event Payload, cfg *Config) (err error) {
 	
 	for _, item := range cfg.Items {
 		if item.Secret != "" &&
-			!hmac.Equal([]byte(event.Secret), githubSecret(event.body, []byte(item.Secret))) {
+			event.Secret != githubSecret(event.body, []byte(item.Secret)) {
 			log.Println("validate secret failed")
 			break
 		}
@@ -80,10 +78,8 @@ func handleGithub(event Payload, cfg *Config) (err error) {
 	return
 }
 
-func githubSecret(data, secret []byte) []byte{
-	mac := hmac.New(sha256.New, secret)
-	mac.Write(data)
-	return append([]byte("sha256="),mac.Sum(nil)...)
+func githubSecret(data, secret []byte) string {
+	return "sha256=" + NewSha256(data, secret)
 }
 
 
