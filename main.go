@@ -63,7 +63,8 @@ func runScript(item *WatchItem) (err error) {
 func handleGithub(event Payload, cfg *Config) (err error) {
 	
 	for _, item := range cfg.Items {
-		if hmac.Equal([]byte(event.Secret), githubSecret(event.body, []byte(item.Secret))) {
+		if item.Secret != "" &&
+			!hmac.Equal([]byte(event.Secret), githubSecret(event.body, []byte(item.Secret))) {
 			log.Println("validate secret failed")
 			break
 		}

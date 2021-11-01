@@ -3,7 +3,7 @@
   "items": [
     {
       "repo": "https://github.com/miaogaolin/printlove",
-      "branch": "master",
+      "branch": "main",
       "script": "deploy.sh",
       "secret": "123123"
     }
